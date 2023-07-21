@@ -1,35 +1,47 @@
 `include "uvm_macros.svh"
 import uvm_pkg::*;
-`include "my_driver.sv"
+`include  "define.sv"
+`include "wr_transaction.sv"
+`include "rd_transaction.sv"
 `include "my_if.sv"
+`include "wr_driver.sv"
+`include "rd_driver.sv"
+`include "wr_monitor.sv"
+`include "rd_monitor.sv"
+`include "rd_agent.sv"
+`include "wr_agent.sv"
+`include "my_model.sv"
+`include "my_scoreboard.sv" 
+`include "my_env.sv"
+
 
 
 module top_tb;
 // async_fifo Parameters
-parameter DEPTH  = 8;
-parameter WIDTH  = 8;
 
 // async_fifo Inputs
 reg   wr_clk = 0 ;
 reg   wr_rstn = 1 ;
 reg   wr_en  = 0 ;
-reg   [WIDTH - 1: 0]  wr_data   = 0 ;
+reg   [`WIDTH - 1: 0]  wr_data   = 0 ;
 reg   rd_clk = 0 ;
 reg   rd_rstn   = 0 ;
 reg   rd_en  = 0 ;
 
 // async_fifo Outputs
-wire  [WIDTH - 1: 0]  rd_data              ;
+wire  [`WIDTH - 1: 0]  rd_data              ;
 wire rd_valid;
 wire  full_flag   ;
 wire  empty_flag  ;
 
-my_if wr_if(wr_clk,wr_rstn);
-my_if rd_if(rd_clk,rd_rstn);
+wr_if wr_if(wr_clk,wr_rstn);
+rd_if rd_if(rd_clk,rd_rstn);
 
 initial begin
-	uvm_config_db#(virtual my_if)::set(null,"uvm_test_top","wr_if",wr_if);
-	uvm_config_db#(virtual my_if)::set(null,"uvm_test_top","rd_if",rd_if);
+	uvm_config_db#(virtual wr_if)::set(null,"uvm_test_top.i_agt.wr_drv","wr_if",wr_if);
+	uvm_config_db#(virtual wr_if)::set(null,"uvm_test_top.i_agt.wr_mon","wr_if",wr_if);
+	uvm_config_db#(virtual rd_if)::set(null,"uvm_test_top.o_agt.rd_drv","rd_if",rd_if);
+	uvm_config_db#(virtual rd_if)::set(null,"uvm_test_top.o_agt.rd_mon","rd_if",rd_if);
 end
 
 initial begin 
@@ -53,17 +65,21 @@ end
 
 initial begin
 	wr_rstn = 1'b0;
-	wr_rstn = 1'b0;
+	
 	#30 wr_rstn = 1'b1;
-	#30 rd_rstn = 1'b1;
+	
 end
 initial begin
-	run_test("my_driver");
+	rd_rstn = 1'b0;
+	#40 rd_rstn = 1'b1;
+end
+initial begin
+	run_test("my_env");
 end
 
 async_fifo #(
-    .DEPTH ( DEPTH ),
-    .WIDTH ( WIDTH ))
+    .DEPTH ( `DEPTH ),
+    .WIDTH ( `WIDTH ))
  u_async_fifo (
     .wr_clk                  ( wr_clk                     ),        
     .wr_rstn                 ( wr_rstn                    ),        
