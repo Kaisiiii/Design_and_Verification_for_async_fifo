@@ -1,6 +1,6 @@
 `ifndef RD_DRIVER__SV
 `define RD_DRIVER__SV
-class rd_driver extends uvm_driver;
+class rd_driver extends uvm_driver#(rd_transaction);
 	virtual rd_if rd_if;
 	logic no_tr = 1'b0; 
 	`uvm_component_utils(rd_driver);

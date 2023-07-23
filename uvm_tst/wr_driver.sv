@@ -1,7 +1,7 @@
 `include "define.sv"
 `ifndef WR_DRIVER__SV
 `define WR_DRIVER__SV
-class wr_driver extends uvm_driver;
+class wr_driver extends uvm_driver#(wr_transaction);
 	virtual wr_if wr_if;
 	logic no_tr = 1'b0;
 	`uvm_component_utils(wr_driver);
