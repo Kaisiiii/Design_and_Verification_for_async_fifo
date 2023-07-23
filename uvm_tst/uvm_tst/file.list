@@ -1,0 +1,5 @@
++incdir+$UVM_HOME/src
+$UVM_HOME/src/uvm_pkg.sv
+../rtl/async_fifo.v
+top_tb.sv
+
