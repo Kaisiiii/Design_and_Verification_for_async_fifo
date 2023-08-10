@@ -27,8 +27,8 @@ task wr_monitor::main_phase(uvm_phase phase);
 	while(1)begin
 		tr = new("tr");
 		collect_one_pkt(tr);
-		ap.write(tr);
-		//tr.my_print();
+		if(wr_if.en && !wr_if.full)
+			ap.write(tr);
 	end
 endtask
 
@@ -38,10 +38,9 @@ task wr_monitor::collect_one_pkt(wr_transaction tr);
 		if(wr_if.en)
 			break;
 	end
-	`uvm_info("wr_monitor","start collecting one pkt",UVM_MEDIUM);
+	
 	tr.data = wr_if.data;
-	`uvm_info("wr_monitor","finish collecting one pkt",UVM_MEDIUM);
-	//tr.my_print();
+
 endtask
 
 `endif

@@ -6,7 +6,8 @@ class my_env extends uvm_env;
 	rd_agent o_agt;
 	my_model mdl;
 	my_scoreboard scb;
-	
+	my_virtual_sequencer vsqr;
+
 	uvm_tlm_analysis_fifo #(wr_transaction) agt_mdl_fifo;
 	uvm_tlm_analysis_fifo #(wr_transaction) agt_scb_fifo;
 	uvm_tlm_analysis_fifo #(wr_transaction) mdl_scb_fifo;
@@ -21,14 +22,16 @@ class my_env extends uvm_env;
 		o_agt = rd_agent::type_id::create("o_agt",this);
 		mdl = my_model::type_id::create("mdl",this);
 		scb = my_scoreboard::type_id::create("scb",this);
+		vsqr = my_virtual_sequencer::type_id::create("vsqr",this);
 		agt_mdl_fifo = new("agt_mdl_fifo", this);
 		agt_scb_fifo = new("agt_scb_fifo", this);
 		mdl_scb_fifo = new("mdl_scb_fifo", this);
+
 	endfunction
 
 	`uvm_component_utils(my_env);
 	extern virtual function void  connect_phase(uvm_phase phase);
-	extern virtual task  run_phase(uvm_phase phase);
+
 endclass
 
 function void my_env::connect_phase(uvm_phase phase);
@@ -41,11 +44,10 @@ function void my_env::connect_phase(uvm_phase phase);
 
 	mdl.ap.connect(mdl_scb_fifo.analysis_export);
 	scb.exp_port.connect(mdl_scb_fifo.blocking_get_export);
+
+	vsqr.v_wr_sqr = i_agt.wr_sqr;
+	vsqr.v_rd_sqr = o_agt.rd_sqr;
 endfunction
 
-task my_env::run_phase(uvm_phase phase);
-	super.run_phase(phase);
-	uvm_top.print_topology();
-endtask 
-
 `endif
+

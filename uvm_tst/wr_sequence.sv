@@ -18,7 +18,7 @@ endtask
 
 task wr_sequence::pre_body();
     if(starting_phase != null) begin 
-        starting_phase.raise_objection(this);
+       starting_phase.raise_objection(this);
     end
 endtask
 
@@ -27,7 +27,4 @@ task wr_sequence::post_body();
         starting_phase.drop_objection(this);
     end
 endtask
-
-
-
 `endif

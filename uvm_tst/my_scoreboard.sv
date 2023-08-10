@@ -17,6 +17,7 @@ class my_scoreboard extends uvm_scoreboard;
 endclass
 
 function void my_scoreboard::build_phase(uvm_phase phase);
+	`uvm_info("my_scoreboard","scoreboard build phase is called!",UVM_LOW);
 	super.build_phase(phase);
 	exp_port = new("exp_port",this);
 	act_port = new("act_port",this);
@@ -25,7 +26,7 @@ endfunction
 task my_scoreboard::main_phase(uvm_phase phase);
 	wr_transaction get_exp, get_act, tmp_tr;
 	bit result;
-	
+	`uvm_info("my_scoreboard","scoreboard main phase is called!",UVM_LOW);
 	super.main_phase(phase);
 	fork
 		while(1)begin

@@ -27,7 +27,6 @@ task rd_monitor::main_phase(uvm_phase phase);
 		tr = new("tr");
 		collect_one_pkt(tr);
 		ap.write(tr);
-		//tr.print();
 	end
 endtask
 
@@ -38,9 +37,7 @@ task rd_monitor::collect_one_pkt(wr_transaction tr);
 			if(rd_if.valid)
 				break;
 	end
-	`uvm_info("rd_monitor","start collecting one pkt",UVM_MEDIUM);
 	tr.data = rd_if.data;	
-	`uvm_info("rd_monitor","finish collecting one pkt",UVM_MEDIUM);
 endtask
 
 `endif

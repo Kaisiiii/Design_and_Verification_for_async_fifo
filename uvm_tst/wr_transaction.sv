@@ -9,15 +9,5 @@ class wr_transaction extends uvm_sequence_item;
 	function new(string name = "wr_transcation");
 		super.new(name);
 	endfunction
-
-	function void my_print();
-		$display("wr_data = %0h",data);
-	endfunction
-
-	function void my_copy(wr_transaction tr);
-		if(tr == null)
-         	`uvm_fatal("my_transaction", "tr is null!!!!")
-		data <= tr.data; 
-	endfunction
 endclass
  

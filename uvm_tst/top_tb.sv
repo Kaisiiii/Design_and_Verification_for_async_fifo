@@ -1,13 +1,14 @@
 `include "uvm_macros.svh"
 import uvm_pkg::*;
 `include  "define.sv"
+`include "my_if.sv"
 `include "wr_transaction.sv"
 `include "rd_transaction.sv"
 `include "wr_sequence.sv"
-`include "wr_sequencer.sv"
 `include "rd_sequence.sv"
 `include "rd_sequencer.sv"
-`include "my_if.sv"
+`include "wr_sequencer.sv"
+`include "my_virtual_sequencer.sv"
 `include "wr_driver.sv"
 `include "rd_driver.sv"
 `include "wr_monitor.sv"
@@ -17,11 +18,10 @@ import uvm_pkg::*;
 `include "my_model.sv"
 `include "my_scoreboard.sv" 
 `include "my_env.sv"
-
-
-
+`include "base_test.sv"
+`include "my_case0.sv"
+`include "my_case1.sv"
 module top_tb;
-// async_fifo Parameters
 
 // async_fifo Inputs
 reg   wr_clk = 0 ;
@@ -42,10 +42,10 @@ wr_if wr_if(wr_clk,wr_rstn);
 rd_if rd_if(rd_clk,rd_rstn);
 
 initial begin
-	uvm_config_db#(virtual wr_if)::set(null,"uvm_test_top.i_agt.wr_drv","wr_if",wr_if);
-	uvm_config_db#(virtual wr_if)::set(null,"uvm_test_top.i_agt.wr_mon","wr_if",wr_if);
-	uvm_config_db#(virtual rd_if)::set(null,"uvm_test_top.o_agt.rd_drv","rd_if",rd_if);
-	uvm_config_db#(virtual rd_if)::set(null,"uvm_test_top.o_agt.rd_mon","rd_if",rd_if);
+	uvm_config_db#(virtual wr_if)::set(null,"uvm_test_top.env.i_agt.wr_drv","wr_if",wr_if);
+	uvm_config_db#(virtual wr_if)::set(null,"uvm_test_top.env.i_agt.wr_mon","wr_if",wr_if);
+	uvm_config_db#(virtual rd_if)::set(null,"uvm_test_top.env.o_agt.rd_drv","rd_if",rd_if);
+	uvm_config_db#(virtual rd_if)::set(null,"uvm_test_top.env.o_agt.rd_mon","rd_if",rd_if);
 end
 
 initial begin 
@@ -69,16 +69,15 @@ end
 
 initial begin
 	wr_rstn = 1'b0;
-	
 	#30 wr_rstn = 1'b1;
-	
 end
 initial begin
 	rd_rstn = 1'b0;
 	#40 rd_rstn = 1'b1;
 end
+
 initial begin
-	run_test("my_env");
+	run_test();
 end
 
 async_fifo #(
